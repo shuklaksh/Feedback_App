@@ -4,7 +4,7 @@ import Button from '../shared/Button';
 import RatingSelect from '../shared/RatingSelect';
 import FeedbackContext from '../../context/FeedbackContext';
 
-function FeedbackForm({handleAdd}) {
+function FeedbackForm() {
     const[review,setReview] = useState("");
     const[btnDisabled,setbtnDisabled] = useState(true);
     const[message,setMessage] = useState("");

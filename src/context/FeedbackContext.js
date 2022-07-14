@@ -1,44 +1,47 @@
 import React , {createContext , useState} from 'react'
-import {v4 as uuidv4} from 'uuid';
+import { useEffect } from 'react';
 
 const FeedbackContext = createContext();
 
 export const FeedbackProvider = ({children}) => {
     
-    const[feedback,setFeedback] = useState([
-        
-         {
-            id: 1,
-            rating: 10,
-            text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. consequuntur vel vitae commodi alias voluptatem est voluptatum ipsa quae.',
-          },
-          {
-            id: 2,
-            rating: 9,
-            text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. consequuntur vel vitae commodi alias voluptatem est voluptatum ipsa quae.',
-          },
-          {
-            id: 3,
-            rating: 8,
-            text: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. consequuntur vel vitae commodi alias voluptatem est voluptatum ipsa quae.',
-          },
-    ])
-
+    const[feedback,setFeedback] = useState([]);
+    const[isLoading,setIsLoading] = useState(true);
     const [feedbackEdit, setFeedbackEdit] = useState({
         item: {},
         edit:false
     })
+     useEffect(() => {
+      fetchFeedback();
+     },[]);
 
-    const deleteFeedback = (id) => {
+     //fetch feedback
+     const fetchFeedback = async () => {
+      const response = await fetch(`http://localhost:5000/feedback?_sort=id&_order=desc`);
+      const data = await response.json();
+      setFeedback(data);
+      setIsLoading(false)
+     }
+
+    const deleteFeedback = async (id) => {
         if(window.confirm("Are you sure?")){
+          await fetch(`http://localhost:5000/feedback/${id}`, {
+            method: 'DELETE'
+          })
           setFeedback(feedback.filter((item)=> item.id !== id))
         }
       }
 
-    const addFeedback = (newFeedback) => {
-        newFeedback.id = uuidv4()
-        console.log(newFeedback);
-        setFeedback([newFeedback, ...feedback]);
+    const addFeedback = async (newFeedback) => {
+        const response = await fetch('http://localhost:5000/feedback',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newFeedback),
+        })
+        const data = await response.json();
+        setFeedback([data, ...feedback]);
       }
     const editFeedback = (item) => {
         setFeedbackEdit({
@@ -47,8 +50,16 @@ export const FeedbackProvider = ({children}) => {
         })
     }
 
-    const updateItem = (id,newItem) => {
-        setFeedback(feedback.map((item) => (item.id === id ? {...item, ...newItem} : item)))
+    const updateItem = async (id,newItem) => {
+        const response = await fetch(`http://localhost:5000/feedback/${id}`, {
+          method: 'PUT',
+          headers:{
+            'Content-Type' : 'application/json',
+          },
+          body : JSON.stringify(newItem),
+        })
+        const data = await response.json();
+        setFeedback(feedback.map((item) => (item.id === id ? {...item, ...data} : item)))
 
         setFeedbackEdit({
             item:{},
@@ -61,6 +72,7 @@ export const FeedbackProvider = ({children}) => {
             feedback,
             deleteFeedback,
             addFeedback,
+            isLoading,
             editFeedback,
             updateItem,
             feedbackEdit,

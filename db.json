@@ -1,0 +1,19 @@
+{
+  "feedback": [
+    {
+      "text": "worst service ever",
+      "rating": 5,
+      "id": 1
+    },
+    {
+      "text": "didnot like ther service",
+      "rating": 5,
+      "id": 2
+    },
+    {
+      "text": "bekar thi asd a",
+      "rating": 3,
+      "id": 3
+    }
+  ]
+}
