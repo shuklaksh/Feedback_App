@@ -37,6 +37,7 @@ export const FeedbackProvider = ({children}) => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Active': 'application/json',
           },
           body: JSON.stringify(newFeedback),
         })
@@ -55,6 +56,7 @@ export const FeedbackProvider = ({children}) => {
           method: 'PUT',
           headers:{
             'Content-Type' : 'application/json',
+            'Active': 'application/json',
           },
           body : JSON.stringify(newItem),
         })
